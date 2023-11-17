@@ -1,6 +1,6 @@
-import { contactAddSchema, contactUpdateSchema } from "../schemas/contacts-schema.js";
+import { contactAddSchema, contactUpdateSchema, ContactFavoriteSchema } from "../schemas/contacts-schema.js";
 
-import  contactsService from  "../models/contacts.js";
+import Contact from "../models/Contact.js";
 
 import {HttpError} from "../helpers/index.js"
 
@@ -9,7 +9,7 @@ import {HttpError} from "../helpers/index.js"
 
 const getAllContacts = async (req, res, next) => {
     try{
-    const result = await contactsService.listContacts()
+    const result = await Contact.find()
     res.json(result)
  }
  catch(error){
@@ -21,10 +21,10 @@ const getAllContacts = async (req, res, next) => {
 
 const getByID = async (req, res, next) => {
     try{
-    const {contactId} = req.params;
-    const result = await contactsService.getContactById(contactId);
+    const {id} = req.params;
+    const result = await Contact.findById(id);
     if(!result){
-        throw HttpError (404, `Contact with id=${contactId} not found`);
+        throw HttpError (404, `Contact with id=${id} not found`);
     }
     res.json(result);
 
@@ -39,7 +39,7 @@ const add = async (req, res, next) => {
     if (error){
         throw HttpError(400, error.message);
     }
-    const result = await contactsService.addContact(req.body);
+    const result = await Contact.create(req.body);
 
     res.status(201).json(result);
 
@@ -48,6 +48,8 @@ const add = async (req, res, next) => {
  }
 }
 
+ContactFavoriteSchema
+
 const updateById = async(req, res, next)=>{
  try {
     const {error} = contactUpdateSchema.validate(req.body);
@@ -55,7 +57,7 @@ const updateById = async(req, res, next)=>{
         throw HttpError(400, error.message);
     }
     const {id} = req.params;
-    const result = await contactsService.updateContactById(id, req.body);
+    const result = await Contact.findByIdAndUpdate(id, req.body);
     if(!result){
         throw HttpError (404, `Contact with id=${contactId} not found`);
     }
@@ -70,7 +72,7 @@ const updateById = async(req, res, next)=>{
 const deleteById = async(req, res, next)=>{
     try {
         const {id} = req.params;
-        const result = await contactsService.removeContact(id);
+        const result = await Contact.findByIdAndDelete(id);
         if(!result){
             throw HttpError (404, `Contact with id=${contactId} not found`);
         }
