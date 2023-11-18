@@ -21,10 +21,10 @@ const getAllContacts = async (req, res, next) => {
 
 const getByID = async (req, res, next) => {
     try{
-    const {id} = req.params;
-    const result = await Contact.findById(id);
+    const {contactId} = req.params;
+    const result = await Contact.findById(contactId);
     if(!result){
-        throw HttpError (404, `Contact with id=${id} not found`);
+        throw HttpError (404, `Contact with id=${contactId} not found`);
     }
     res.json(result);
 
@@ -56,8 +56,8 @@ const updateById = async(req, res, next)=>{
     if (error){
         throw HttpError(400, error.message);
     }
-    const {id} = req.params;
-    const result = await Contact.findByIdAndUpdate(id, req.body);
+    const {contactId} = req.params;
+    const result = await Contact.findByIdAndUpdate(contactId, req.body);
     if(!result){
         throw HttpError (404, `Contact with id=${contactId} not found`);
     }
@@ -71,8 +71,8 @@ const updateById = async(req, res, next)=>{
 
 const deleteById = async(req, res, next)=>{
     try {
-        const {id} = req.params;
-        const result = await Contact.findByIdAndDelete(id);
+        const {contactId} = req.params;
+        const result = await Contact.findByIdAndDelete(contactId);
         if(!result){
             throw HttpError (404, `Contact with id=${contactId} not found`);
         }
@@ -84,10 +84,30 @@ const deleteById = async(req, res, next)=>{
     }
 }
 
+const updateStatusContact  = async(req, res, next)=>{
+    try {
+       const {error} = contactUpdateSchema.validate(req.body);
+       if (error){
+           throw HttpError(400, error.message);
+       }
+       const {contactId} = req.params;
+       const result = await Contact.findByIdAndUpdate(contactId, req.body);
+       if(!result){
+           throw HttpError (404, `Contact with id=${contactId} not found`);
+       }
+   
+       res.json(result);
+   
+    } catch (error) {
+       next(error);
+    }
+   }
+
 export default {
     getAllContacts,
     getByID,
     add,
     updateById,
     deleteById,
+    updateStatusContact,
 }
