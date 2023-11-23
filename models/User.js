@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 import { handleSaveError, preUpdate} from "./hooks.js";
 
 const userSchema = new Schema ({
+      username: {
+        type: String,
+        required: true,
+    },
     password: {
       type: String,
       required: [true, 'Set password for user'],
