@@ -7,17 +7,18 @@ import authController from '../../controllers/auth-controller.js';
 import { userSigninSchema, userSignupSchema } from '../../schemas/user-schema.js';
 
 import {authenticate, isEmptyBody} from "../../middlewares/index.js";
+import validateBody from '../../decorators/validaterBody.js';
 
 
 
 const authRouter = express.Router();
 
-authRouter.post("/signup", isEmptyBody, authController.signup);
+authRouter.post("/register", isEmptyBody, validateBody(userSignupSchema), authController.signup);
 
-authRouter.post("/signin", isEmptyBody, authController.signin);
+authRouter.post("/login", isEmptyBody, validateBody(userSigninSchema), authController.signin);
 
 authRouter.get("/current", authenticate, authController.getCurrent);
 
-authRouter.get("/signout", authenticate, authController.signout)
+authRouter.get("/logout", authenticate, authController.signout)
 
 export default authRouter;

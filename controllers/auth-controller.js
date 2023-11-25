@@ -1,42 +1,45 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
-
+import dotenv from "dotenv";
 import User from "../models/User.js";
 
 
-import {HttpError} from "../helpers/index.js"
 
+import { HttpError } from "../helpers/index.js";
+
+import { ctrlWrapper } from "../decorators/index.js";
+
+
+dotenv.config();
 const {JWT_SECRET} = process.env;
 
 
-const signup = async(req, res) => {
-    const {email, password} = req.body;
-    const user = await User.findOne({email});
+const signup = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     if (user) {
-        throw HttpError(409,"Email already exist" );
-
+        throw HttpError(409, "Email in use");
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({...req.body, password: hashPassword});
+    const newUser = await User.create({ ...req.body, password: hashPassword });
 
     res.status(201).json({
-        email: newUser.email,
         username: newUser.username,
+        email: newUser.email,
     })
-
 }
 
 const signin = async(req, res) => {
     const {email, password} = req.body;
     const user = await User.findOne({email});
     if (!user) {
-        throw HttpError(401,"Email or password invalid" );
+        throw HttpError(401,"Email or password is wrong");
     }
     const passwordCommpare = await bcrypt.compare(password, user.password);
     if (!passwordCommpare) {
-        throw HttpError(401,"Email or password invalid" );
+        throw HttpError(401,"Email or password is wrong" );
     }
 
     const payload = {
@@ -69,5 +72,10 @@ res.json({
 })
 }
 
-export default {signup, signin, getCurrent, signout}
 
+export default {
+    signup: ctrlWrapper(signup),
+    signin: ctrlWrapper(signin),
+    getCurrent: ctrlWrapper(getCurrent),
+    signout: ctrlWrapper(signout),
+}

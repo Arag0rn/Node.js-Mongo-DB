@@ -4,7 +4,7 @@ import Contact from "../models/Contact.js";
 
 import {HttpError} from "../helpers/index.js"
 
-
+import { ctrlWrapper } from "../decorators/index.js";
 
 
 const getAllContacts = async (req, res, next) => {
@@ -86,11 +86,12 @@ const updateStatusContact  = async(req, res, next)=>{
     }
    }
 
+
 export default {
-    getAllContacts,
-    getByID,
-    add,
-    updateById,
-    deleteById,
+    getAllContacts: ctrlWrapper(getAllContacts),
+    getByID: ctrlWrapper(getByID),
+    add: ctrlWrapper(add),
+    updateById: ctrlWrapper(updateById),
+    deleteById: ctrlWrapper(deleteById),
     updateStatusContact,
 }
