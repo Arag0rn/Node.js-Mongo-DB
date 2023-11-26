@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
-const {JWT_SECRET} = process.env;
 import {HttpError} from "../helpers/index.js";
 import User from "../models/User.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+const {JWT_SECRET} = process.env;
 
 const authenticate = async(req, res, next)=>{
     const {authorization} = req.headers;
@@ -25,4 +28,4 @@ const authenticate = async(req, res, next)=>{
     }
 }
 
-export default authenticate; 
+export default authenticate;
