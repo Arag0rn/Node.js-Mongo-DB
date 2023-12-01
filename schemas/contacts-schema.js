@@ -17,6 +17,7 @@ export const contactAddSchema = Joi.object({
         'string.empty': `"phone" cannot be an empty field`,
         'any.required': `"phone" is a required field`
       }),
+      avatar: Joi.string().optional(),
 })
 
 export const contactUpdateSchema = Joi.object({

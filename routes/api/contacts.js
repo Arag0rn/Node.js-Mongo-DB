@@ -3,7 +3,7 @@ import contactsController from '../../controllers/contacts-controller.js'
 
 import express from 'express';
 
-import {isEmptyBody, isEmptyFavorite, isValidId, authenticate} from "../../middlewares/index.js";
+import {isEmptyBody, isEmptyFavorite, isValidId, authenticate, upload} from "../../middlewares/index.js";
 
 
 
@@ -15,7 +15,7 @@ contactsRouter.get('/',  contactsController.getAllContacts);
 
 contactsRouter.get('/:contactId', isValidId, contactsController.getByID);
 
-contactsRouter.post('/', isEmptyBody, contactsController.add);
+contactsRouter.post('/', upload.single("avatar"), isEmptyBody, contactsController.add);
 
 contactsRouter.patch("/:contactId/favorite", isValidId, isEmptyFavorite, contactsController.updateStatusContact)
 
