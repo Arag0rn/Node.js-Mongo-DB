@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import User from "../models/User.js";
 import gravatar from 'gravatar';
 import path from "path";
+import jimp from 'jimp';
 import fs from "fs/promises";
 
 
@@ -78,19 +79,19 @@ res.json({
 
 
 const patchAvatar = async (req, res) => {
-  
-    const {_id} = req.user;
+    const { _id } = req.user;
     const { path: oldPath, filename } = req.file;
     const newPath = path.join(postersPath, filename);
+    const avatar = path.join("avatar", filename);
 
-    await fs.rename(oldPath, newPath);
-    const avatar = path.join("avatar", filename );
+        const image = await jimp.read(oldPath);
+        await image.resize(250, 250);
+        await image.writeAsync(newPath);
 
-    await User.findByIdAndUpdate(_id, { avatarURL: avatar});
+        await User.findByIdAndUpdate(_id, { avatarURL: avatar });
 
-    res.status(200).json({ avatarURL: avatar });
-  }
-
+        res.status(200).json({ avatarURL: avatar });
+}
 
 export default {
     signup: ctrlWrapper(signup),
