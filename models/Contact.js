@@ -22,7 +22,6 @@ const contactSchema = new Schema ({
       },
       avatar: {
         type: String,
-        required: true,
     },
 }, {versionKey: false})
 
