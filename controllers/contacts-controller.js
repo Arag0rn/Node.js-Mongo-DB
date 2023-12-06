@@ -1,10 +1,15 @@
 import { contactAddSchema, contactUpdateSchema, ContactFavoriteSchema } from "../schemas/contacts-schema.js";
+import fs from "fs/promises";
+import path from "path";
 
 import Contact from "../models/Contact.js";
 
 import {HttpError} from "../helpers/index.js"
 
 import { ctrlWrapper } from "../decorators/index.js";
+
+const postersPath = path.resolve("public", "avatar");
+
 
 
 const getAllContacts = async (req, res, next) => {
@@ -31,14 +36,21 @@ const getByID = async (req, res, next) => {
 
 const add = async (req, res, next) => {
     const {_id: owner} = req.user;
-    const result = await Contact.create({...req.body, owner});
+    const {path: oldPath, filename} = req.file;
+    const newPath = path.join(postersPath, filename);
+    console.log(oldPath);
+    console.log(newPath);
+ 
+    await fs.rename(oldPath, newPath);
+
+    const avatar = path.join("avatar", filename )
+    const result = await Contact.create({...req.body, avatar, owner});
 
     res.status(201).json(result);
 
 
 }
 
-ContactFavoriteSchema
 
 const updateById = async (req, res) => {
     const { contactId } = req.params;

@@ -6,7 +6,7 @@ import authController from '../../controllers/auth-controller.js';
 
 import { userSigninSchema, userSignupSchema } from '../../schemas/user-schema.js';
 
-import {authenticate, isEmptyBody} from "../../middlewares/index.js";
+import {authenticate, isEmptyBody, upload} from "../../middlewares/index.js";
 import validateBody from '../../decorators/validaterBody.js';
 
 
@@ -18,6 +18,8 @@ authRouter.post("/register", isEmptyBody, validateBody(userSignupSchema), authCo
 authRouter.post("/login", isEmptyBody, validateBody(userSigninSchema), authController.signin);
 
 authRouter.get("/current", authenticate, authController.getCurrent);
+
+authRouter.patch("/avatars", upload.single("avatar"), authenticate,  authController.patchAvatar);
 
 authRouter.get("/logout", authenticate, authController.signout)
 

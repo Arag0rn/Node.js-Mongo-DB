@@ -20,6 +20,9 @@ const contactSchema = new Schema ({
         type: Schema.Types.ObjectId,
         ref: 'user',
       },
+      avatar: {
+        type: String,
+    },
 }, {versionKey: false})
 
 contactSchema.post("save", handleSaveError);

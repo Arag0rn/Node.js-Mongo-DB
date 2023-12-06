@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import {HttpError} from "../helpers/index.js";
 import User from "../models/User.js";
 import dotenv from "dotenv";
+import { ctrlWrapper } from "../decorators/index.js";
 dotenv.config();
 
 const {JWT_SECRET} = process.env;
@@ -25,7 +26,8 @@ const authenticate = async(req, res, next)=>{
         next();
     } catch (error) {
         throw HttpError(401, error.message);
+        
     }
 }
 
-export default authenticate;
+export default ctrlWrapper(authenticate);
