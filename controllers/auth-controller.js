@@ -32,6 +32,7 @@ const signup = async (req, res) => {
     console.log(verificationToken);
 
     const newUser = await User.create({ ...req.body, avatarURL, password: hashPassword, verificationToken });
+    
     const verifyEmail = {
         to: email,
         subject: "Verify email",
@@ -53,10 +54,10 @@ const verify = async (req, res) => {
         throw HttpError(401, "Email not found");
     }
 
-    await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: "" });
+    await User.updateOne(user.verificationToken, { verify: true, verificationToken: "" });
 
     res.json({
-        message: "Email verify success"
+        message: "Verification successful"
     })
 }
 
@@ -67,7 +68,7 @@ const resendVerify = async (req, res) => {
         throw HttpError(401, "Email not found");
     }
     if (user.verify) {
-        throw HttpError(400, "Email already verify")
+        throw HttpError(400, "Verification has already been passed")
     }
     const verifyEmail = {
         to: email,
@@ -78,7 +79,7 @@ const resendVerify = async (req, res) => {
     await sendEmail(verifyEmail);
 
     res.json({
-        message: "Email send success"
+        message:  "Verification email sent"
     })
 }
 
