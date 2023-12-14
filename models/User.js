@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, preUpdate} from "./hooks.js";
+import Joi from "joi";
+
 
 const userSchema = new Schema ({
     password: {
@@ -18,7 +20,15 @@ const userSchema = new Schema ({
     },
     avatarURL: {
       type: String,
-  },
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, 'Verify token is required'],
+    },
     token: String
   }, {versionKey: false, timestamps: true});
 
@@ -29,5 +39,6 @@ const userSchema = new Schema ({
   userSchema.post("findOneAndUpdate", handleSaveError)
 
   const User = model('user', userSchema);
+
 
 export default User
